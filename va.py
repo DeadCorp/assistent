@@ -15,7 +15,10 @@ NOTE_STRS = ["make a note", "write this down", "remember this",'запиши э�
 YES = ['ok','okey','hey','yes','yea','да','запиши','хочу']
 NO = ['no','нет','не хочу']
 LAN_CHANGE = ['сменим','изменть','смени','измени','change','language','pick language']
-
+LAUNCH = ['start','launch','open','открой','запусти']
+GAME = {
+    'dota2' : ['dota','dota2','dota 2','defens of the ancient 2','defens of the ancient','доту','дота'],
+}
 def speak(text):    
     engine.say(text)
     engine.runAndWait()
@@ -83,7 +86,7 @@ def init():
 print("Start")
 engine =  init()
 language = 'ru'
-
+#subprocess.run("start steam://rungameid/570", shell=True)
 while True:
 
     
@@ -99,6 +102,18 @@ while True:
                     set(text)
             
             bay()
+
+            for phrase in LAUNCH:
+                if phrase == text:
+                    speak_lan('Что запустить','launch what')
+                    game = get_audio(language)
+                    for sub_phrase in GAME['dota2']:
+                        if sub_phrase in game:
+                            subprocess.run("start steam://rungameid/570", shell=True)
+                elif phrase in text:
+                    for sub_phrase in GAME['dota2']:
+                         if sub_phrase in text:
+                             subprocess.run("start steam://rungameid/570", shell=True)
 
             for phrase in LAN_CHANGE:
                 if phrase in text:
