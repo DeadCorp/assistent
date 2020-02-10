@@ -2,6 +2,7 @@ from __future__ import print_function
 import datetime
 import pickle
 import os.path
+import pyaudio
 import os
 import time
 import pyttsx3
@@ -26,8 +27,10 @@ def speak(text):
 
 #language = 'en-US'
 def get_audio(language = 'ru'):
-    r = sr.Recognizer()
+    r = sr.Recognizer()   
+
     with sr.Microphone() as source:
+        r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
         said = ""
         
@@ -36,7 +39,7 @@ def get_audio(language = 'ru'):
             print(said)
         except :
             print("Exception: " )
-
+             
     return said.lower()
 
 def note(text):
@@ -87,13 +90,7 @@ def init():
 print("Start")
 engine =  init()
 language = 'ru'
-#subprocess.run("start steam://rungameid/570", shell=True)
-# for i in GAME:
-#     print(i)
-#     for b in GAME[i]:
-#         print(GAME[i][0])
-s = ' as d a dads asda daada das Jarvis make a note'  
-print(s[s.find('Jarvis') :])
+
 
 def run_game(game):
     id = 0

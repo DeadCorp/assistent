@@ -87,13 +87,7 @@ def init():
 print("Start")
 engine =  init()
 language = 'ru'
-#subprocess.run("start steam://rungameid/570", shell=True)
-# for i in GAME:
-#     print(i)
-#     for b in GAME[i]:
-#         print(GAME[i][0])
-s = ' as d a dads asda daada das Jarvis make a note'  
-print(s[s.find('Jarvis') :])
+
 
 def run_game(game):
     id = 0
