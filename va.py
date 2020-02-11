@@ -30,7 +30,7 @@ def get_audio(language = 'ru'):
     r = sr.Recognizer()   
 
     with sr.Microphone() as source:
-        r.adjust_for_ambient_noise(source)
+        r.adjust_for_ambient_noise(source,duration=0.3)
         audio = r.listen(source)
         said = ""
         
@@ -86,12 +86,6 @@ def init():
             engine.setProperty("voice", v.id)
     return engine
 
-
-print("Start")
-engine =  init()
-language = 'ru'
-
-
 def run_game(game):
     id = 0
     for i in GAME:
@@ -99,51 +93,63 @@ def run_game(game):
             if str(game_name) in game:
                 id = GAME[i][-1]
                 subprocess.run("start steam://rungameid/" + str(id), shell=True)
-                
+
+def is_command_in_wake(text,say):
+    temp = text[text.find(say) : ]
+    if temp == say:
+        speak_lan('Да, хазззяин','I am ready')            
+        text = get_audio(language)
+    else:
+        speak_lan('Да, хазззяин','I am ready')            
+        text = temp.replace(say+' ','')
+    return text
+
+print("Start")
+engine =  init()
+language = 'ru'
+
 while True:
 
     
     print("Listening")
     text = get_audio(language)
-    for say in WAKE:        
-        if say in text:
-            temp = text[text.find(say) : ]
-            
 
-            if temp == say:
-                speak_lan('Да, хазззяин','I am ready')            
-                text = get_audio(language)
-            else:
-                speak_lan('Да, хазззяин','I am ready')            
-                text = temp.replace(say+' ','')
+    if text != '':
+        for say in WAKE:        
+            if say in text:
+
+                text = is_command_in_wake(text,say)                  
                 
-            
-            
-            for phrase in NOTE_STRS:
-                if phrase in text:
-                    set(text)
-            
+                
+                for phrase in NOTE_STRS:
+                    if phrase in text:
+                        set(text)
+                
+                
+
+                for phrase in LAUNCH:
+                    if phrase == text:
+                        speak_lan('Что запустить','launch what')
+                        game = get_audio(language)
+                        run_game(game)
+                    elif phrase in text:
+                        run_game(text)
+
+                for phrase in LAN_CHANGE:
+                    if phrase in text:
+                        if language == 'ru':
+                            language = 'en-US'
+                            
+                        elif language == 'en-US':
+                            language = 'ru'
+                            
+                        speak_lan('Язык был изменен','language has be chenged')
+                        break   
+
+                bay()     
+        else:
             bay()
-
-            for phrase in LAUNCH:
-                if phrase == text:
-                    speak_lan('Что запустить','launch what')
-                    game = get_audio(language)
-                    run_game(game)
-                elif phrase in text:
-                    run_game(text)
-
-            for phrase in LAN_CHANGE:
-                if phrase in text:
-                    if language == 'ru':
-                        language = 'en-US'
-                        
-                    elif language == 'en-US':
-                        language = 'ru'
-                        
-                    speak_lan('Язык был изменен','language has be chenged')
-                    break        
     else:
-        bay()
+        continue
 
     
