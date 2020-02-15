@@ -108,48 +108,48 @@ print("Start")
 engine =  init()
 language = 'ru'
 
-while True:
+# while True:
 
     
-    print("Listening")
-    text = get_audio(language)
+#     print("Listening")
+#     text = get_audio(language)
 
-    if text != '':
-        for say in WAKE:        
-            if say in text:
+#     if text != '':
+#         for say in WAKE:        
+#             if say in text:
 
-                text = is_command_in_wake(text,say)                  
+#                 text = is_command_in_wake(text,say)                  
                 
                 
-                for phrase in NOTE_STRS:
-                    if phrase in text:
-                        set(text)
+#                 for phrase in NOTE_STRS:
+#                     if phrase in text:
+#                         set(text)
                 
                 
 
-                for phrase in LAUNCH:
-                    if phrase == text:
-                        speak_lan('Что запустить','launch what')
-                        game = get_audio(language)
-                        run_game(game)
-                    elif phrase in text:
-                        run_game(text)
+#                 for phrase in LAUNCH:
+#                     if phrase == text:
+#                         speak_lan('Что запустить','launch what')
+#                         game = get_audio(language)
+#                         run_game(game)
+#                     elif phrase in text:
+#                         run_game(text)
 
-                for phrase in LAN_CHANGE:
-                    if phrase in text:
-                        if language == 'ru':
-                            language = 'en-US'
+#                 for phrase in LAN_CHANGE:
+#                     if phrase in text:
+#                         if language == 'ru':
+#                             language = 'en-US'
                             
-                        elif language == 'en-US':
-                            language = 'ru'
+#                         elif language == 'en-US':
+#                             language = 'ru'
                             
-                        speak_lan('Язык был изменен','language has be chenged')
-                        break   
+#                         speak_lan('Язык был изменен','language has be chenged')
+#                         break   
 
-                bay()     
-        else:
-            bay()
-    else:
-        continue
+#                 bay()     
+#         else:
+#             bay()
+#     else:
+#         continue
 
     
