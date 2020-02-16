@@ -35,9 +35,13 @@ import json
 #   Запускається якщо неможе найти або открити файл з ід игр стим
 def update_steam_games():
     i = requests.get('http://api.steampowered.com/ISteamApps/GetAppList/v0002/')
+    s = json.loads(i.text)
     if i.status_code == 200:
-        with open(r'./commands/ids','wb') as target:
-            pickle.dump(i.text,target)
+    
+        with open(r'./commands/ids.txt','w') as target:
+            # json.dump(i.text,target,ensure_ascii=False,sort_keys=True, indent=4)
+            json.dump(s,target,indent=4)
+            
     else:
         update_steam_games()
 
@@ -47,8 +51,8 @@ def get_game_id(name):
     
     id = 0
     try:
-        with open(r'./commands/ids','rb') as target:
-            s = json.loads(pickle.load(target))
+        with open(r'./commands/ids.txt','r') as target:
+            s = json.loads(target)
 
         for app in s['applist']['apps']: 
             if app['name'].lower() == name.lower():
@@ -63,24 +67,34 @@ def get_game_id(name):
 #   Витягуємо з файлу команди для роботи з ними.
 #   команди за допомогою бібліотеки pickle записуються 
 #   та витягуються з файлу
-def get_command(filename):
-    s = open(r'./commands/'+filename,'rb')
-    dict_commands = {}
-    # with open('pickle-first.txt', 'wb') as f:
-    #     pickle.dump(COMMAND, f)
+# def get_command(filename):
+#     s = open(r'./commands/'+filename,'rb')
+#     dict_commands = {}
+#     # with open('pickle-first.txt', 'wb') as f:
+#     #     pickle.dump(COMMAND, f)
  
-    with s as f:
-        dict_commands = pickle.load(f)
-    s.close()
+#     with s as f:
+#         dict_commands = pickle.load(f)
+#     s.close()
 
-    return dict_commands
+#     return dict_commands
+
+def set_command(filename,dict):
+    
+    with open(r'./commands/'+filename,'w') as p:
+        json.dump(dict,p,ensure_ascii=False,sort_keys=True, indent=4)
+
+def get_command(filename):
+    with open(r'./commands/'+filename,'r') as p:
+        dict = json.load(p) 
+    return dict
 
 #   Записуємо команди в файл
-def set_command(filename,command_dict):
-    s = open(r'./commands/'+filename,'wb')
-    with s as f:
-        pickle.dump(command_dict, f) 
-    s.close()
+# def set_command(filename,command_dict):
+#     s = open(r'./commands/'+filename,'wb')
+#     with s as f:
+#         pickle.dump(command_dict, f) 
+#     s.close()
    
 #   Відтворення тексту
 def speak(text):    
@@ -186,7 +200,7 @@ def save_language(text):
 #   стім ід повинен бути записаний останній після усіх можливих назв гри.
 #   Стім айді повинен записатися автоматично якщо знайде назву гри у списку ігр стім (файл - ids)
 def add_game():
-    speak_lan('какую игру нужно добавить, название должно быть как можно точнее на агнлийском','what game you want to add, need the exact name')
+    speak_lan('какую игру нужно добавить, название должно быть как можно точнее на английском','what game you want to add, need the exact name')
     
     game_name = get_audio(asd='idod')
     
@@ -217,7 +231,7 @@ def add_game():
             copy_games[game_name].append(value)
 
     set_command('games.txt',copy_games)
-    speak_lan('спасибо, игры были добавлены','thaks, games added')
+    speak_lan('спасибо, игра были добавлены','thaks, games added')
     return True
 
 #   Додавання команди до списку команд
@@ -256,7 +270,7 @@ def add_command():
             copy_commands[say_key].append(say_value)
 
     set_command('command.txt',copy_commands)
-    speak_lan('спасибо, команды были добавлены','thaks, command added')
+    speak_lan('спасибо, команда были добавлены','thaks, command added')
     return True
 
 #   Запуск гри зі стім
@@ -286,10 +300,14 @@ def is_command_in_wake(text,say):
         text = get_audio()
     return  text
 
-
-
-
+def remove_emptys(dicts):
+    for key in dicts:
+        for value in dicts[key]:
+            if value == '':
+                dicts[key].remove('')
+    return dicts
 #   Запуск програми
+
 
 print("Start")
 engine =  init()
@@ -302,16 +320,18 @@ check_for_update_command = False
 check_for_language_change = False
 
 #   Загрузка списків команд та ігор
+
 commands = get_command('command.txt')
 games = get_command('games.txt')
+
+commands = remove_emptys(commands)
+games = remove_emptys(games)
 
 print(commands)
 print(games)
 
 
 #   Бескінечний цикл, для виходу треба попрощатись з помічником
-
-
 
 while True:
 
