@@ -38,9 +38,9 @@ def update_steam_games():
     s = json.loads(i.text)
     if i.status_code == 200:
     
-        with open(r'./commands/ids.txt','w') as target:
+        with open(r'./commands/ids.txt','w',encoding='utf8') as target:
             # json.dump(i.text,target,ensure_ascii=False,sort_keys=True, indent=4)
-            json.dump(s,target,indent=4)
+            json.dump(s,target,indent=4,ensure_ascii=False)
             
     else:
         update_steam_games()
@@ -58,7 +58,9 @@ def get_game_id(name):
             if app['name'].lower() == name.lower():
                 id = app['appid']
                 print(app['name'] + '   ' + str(app['appid']))
-
+            elif app['name'].lower() in name.lower():
+                id = app['appid']
+                print(app['name'] + '   ' + str(app['appid']))
         return id
     except:
         update_steam_games()
@@ -329,6 +331,7 @@ games = remove_emptys(games)
 
 print(commands)
 print(games)
+#update_steam_games()
 
 
 #   Бескінечний цикл, для виходу треба попрощатись з помічником
